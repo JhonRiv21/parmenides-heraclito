@@ -41,13 +41,34 @@
       top: 0;
       width: 100%;
       z-index: 100;
-      background: rgba(10,10,15,0.85);
+      background: rgba(10,10,15,0.92);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 0.5rem;
       padding: 0.75rem 1rem;
+      flex-wrap: wrap;
+    }
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      position: absolute;
+      right: 1rem;
+      top: 0.6rem;
+      z-index: 101;
+      line-height: 1;
+    }
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
     nav a {
@@ -373,10 +394,69 @@
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 640px) {
+      .hamburger { display: block; }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+        padding-top: 0.5rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        padding: 0.7rem 1rem;
+        border-radius: 0;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      nav { flex-direction: column; padding: 0.6rem 1rem; }
+
       .legacy-cols, .dual-quote { grid-template-columns: 1fr; }
-      .vs-table { font-size: 0.8rem; }
-      .vs-table td, .vs-table th { padding: 0.6rem 0.8rem; }
       .phil-header { flex-direction: column; text-align: center; }
+
+      /* Table → stacked cards */
+      .vs-table { border: none; }
+      .vs-table thead { display: none; }
+      .vs-table tbody { display: flex; flex-direction: column; gap: 0.8rem; }
+      .vs-table tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1rem;
+      }
+      .vs-table td { border: none; padding: 0.3rem 0; font-size: 0.85rem; }
+      .vs-table td:first-child {
+        grid-column: 1 / -1;
+        color: var(--text);
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 0.2rem;
+      }
+      .vs-table td:nth-child(2)::before {
+        content: 'Parménides';
+        display: block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--parm-accent);
+        margin-bottom: 0.15rem;
+        font-weight: 600;
+      }
+      .vs-table td:nth-child(3)::before {
+        content: 'Heráclito';
+        display: block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--hera-accent);
+        margin-bottom: 0.15rem;
+        font-weight: 600;
+      }
     }
 
     /* ─── KEYBOARD NAV ─── */
@@ -433,15 +513,18 @@
 
 <!-- NAV -->
 <nav id="navbar">
-  <a href="#intro">Inicio</a>
-  <a href="#contexto">Contexto</a>
-  <a href="#parmenides">Parménides</a>
-  <a href="#parm-args">Argumentos</a>
-  <a href="#heraclito">Heráclito</a>
-  <a href="#hera-args">Argumentos</a>
-  <a href="#versus">Comparación</a>
-  <a href="#legado">Legado</a>
-  <a href="#conclusion">Cierre</a>
+  <button class="hamburger" id="menuBtn" aria-label="Menú">&#9776;</button>
+  <div class="nav-links" id="navLinks">
+    <a href="#intro">Inicio</a>
+    <a href="#contexto">Contexto</a>
+    <a href="#parmenides">Parménides</a>
+    <a href="#parm-args">Argumentos</a>
+    <a href="#heraclito">Heráclito</a>
+    <a href="#hera-args">Argumentos</a>
+    <a href="#versus">Comparación</a>
+    <a href="#legado">Legado</a>
+    <a href="#conclusion">Cierre</a>
+  </div>
 </nav>
 
 <!-- 1. INTRO -->
@@ -782,8 +865,22 @@
   Micro-clase &middot; Filosofía Presocrática &middot; 2026
 </footer>
 
-<!-- Keyboard nav & active link -->
+<!-- Keyboard nav, active link & hamburger -->
 <script>
+  const menuBtn = document.getElementById('menuBtn');
+  const navLinksEl = document.getElementById('navLinks');
+  menuBtn.addEventListener('click', () => {
+    navLinksEl.classList.toggle('open');
+    menuBtn.textContent = navLinksEl.classList.contains('open') ? '\u2715' : '\u2630';
+  });
+  // Close menu on link click (mobile)
+  navLinksEl.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinksEl.classList.remove('open');
+      menuBtn.textContent = '\u2630';
+    });
+  });
+
   const slides = document.querySelectorAll('.slide');
   const navLinks = document.querySelectorAll('nav a');
 
