@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parménides y Heráclito — El Ser y el Cambio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --parm-color: #1a1a4e;
+      --parm-accent: #8b9aff;
+      --parm-light: #e8eaff;
+      --hera-color: #4e1a0a;
+      --hera-accent: #ff8c5a;
+      --hera-light: #fff0e8;
+      --bg: #0f0f18;
+      --text: #f0f0f8;
+      --muted: #b0b0c8;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      transition: all 0.3s;
+    }
+    nav a:hover, nav a.active {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* ─── SLIDES ─── */
+    .slide {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 5rem 2rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-inner {
+      max-width: 960px;
+      width: 100%;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── TITLE SLIDE ─── */
+    #intro {
+      text-align: center;
+      background: radial-gradient(ellipse at 30% 50%, rgba(74,90,203,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 50%, rgba(232,93,38,0.12) 0%, transparent 60%);
+    }
+    #intro h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+    #intro h1 .parm { color: var(--parm-accent); }
+    #intro h1 .hera { color: var(--hera-accent); }
+    #intro .subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .scroll-hint {
+      color: var(--muted);
+      font-size: 0.8rem;
+      animation: pulse 2s ease infinite;
+    }
+    .scroll-hint span { display: block; font-size: 1.4rem; margin-top: 0.3rem; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ─── CONTEXT SLIDE ─── */
+    #contexto { background: radial-gradient(ellipse at 50% 80%, rgba(255,255,255,0.03) 0%, transparent 60%); }
+
+    .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .context-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+    .context-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    .context-card .icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+    .context-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .context-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── PHILOSOPHER SLIDES ─── */
+    .parm-slide {
+      background: radial-gradient(ellipse at 20% 50%, rgba(74,90,203,0.1) 0%, transparent 50%);
+    }
+    .hera-slide {
+      background: radial-gradient(ellipse at 80% 50%, rgba(232,93,38,0.1) 0%, transparent 50%);
+    }
+
+    .phil-header {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .phil-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .parm-slide .phil-avatar { background: linear-gradient(135deg, var(--parm-accent), #7b8aff); }
+    .hera-slide .phil-avatar { background: linear-gradient(135deg, var(--hera-accent), #ff9a5c); }
+    .phil-meta { font-size: 0.85rem; color: var(--muted); }
+
+    .quote-block {
+      border-left: 3px solid;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 0 12px 12px 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      line-height: 1.5;
+    }
+    .parm-slide .quote-block {
+      border-color: var(--parm-accent);
+      background: rgba(139,154,255,0.08);
+      color: #d8ddff;
+    }
+    .hera-slide .quote-block {
+      border-color: var(--hera-accent);
+      background: rgba(255,140,90,0.08);
+      color: #ffd8c4;
+    }
+
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .idea-card {
+      padding: 1.2rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .parm-slide .idea-card { background: rgba(139,154,255,0.08); border-color: rgba(139,154,255,0.15); }
+    .hera-slide .idea-card { background: rgba(255,140,90,0.08); border-color: rgba(255,140,90,0.15); }
+    .idea-card h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .parm-slide .idea-card h4 { color: var(--parm-accent); }
+    .hera-slide .idea-card h4 { color: var(--hera-accent); }
+    .idea-card p { font-size: 0.87rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── ARGS SLIDE ─── */
+    .args-list {
+      margin-top: 1.2rem;
+    }
+    .arg-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .arg-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 2rem;
+      text-align: center;
+    }
+    .parm-slide .arg-num { color: var(--parm-accent); }
+    .hera-slide .arg-num { color: var(--hera-accent); }
+    .arg-item h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .arg-item p { font-size: 0.87rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── VERSUS SLIDE ─── */
+    #versus {
+      background: radial-gradient(ellipse at 25% 50%, rgba(74,90,203,0.08) 0%, transparent 40%),
+                  radial-gradient(ellipse at 75% 50%, rgba(232,93,38,0.08) 0%, transparent 40%);
+    }
+
+    .vs-table {
+      width: 100%;
+      margin-top: 1.5rem;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .vs-table thead th {
+      padding: 1rem 1.2rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .vs-table thead th:nth-child(1) { background: rgba(255,255,255,0.03); color: var(--muted); }
+    .vs-table thead th:nth-child(2) { background: rgba(74,90,203,0.12); color: var(--parm-accent); }
+    .vs-table thead th:nth-child(3) { background: rgba(232,93,38,0.12); color: var(--hera-accent); }
+    .vs-table td {
+      padding: 0.9rem 1.2rem;
+      font-size: 0.88rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .vs-table td:first-child { color: var(--muted); font-weight: 500; }
+    .vs-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+
+    /* ─── LEGACY SLIDE ─── */
+    .legacy-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .legacy-col {
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .legacy-col.parm { background: rgba(139,154,255,0.06); }
+    .legacy-col.hera { background: rgba(255,140,90,0.06); }
+    .legacy-col h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.8rem; }
+    .legacy-col.parm h3 { color: var(--parm-accent); }
+    .legacy-col.hera h3 { color: var(--hera-accent); }
+    .legacy-col li {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      list-style: none;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    .legacy-col.parm li::before { content: '◆'; position: absolute; left: 0; color: var(--parm-accent); font-size: 0.6rem; top: 0.25rem; }
+    .legacy-col.hera li::before { content: '◆'; position: absolute; left: 0; color: var(--hera-accent); font-size: 0.6rem; top: 0.25rem; }
+
+    /* ─── CONCLUSION ─── */
+    #conclusion {
+      text-align: center;
+      background: radial-gradient(ellipse at 50% 60%, rgba(255,255,255,0.04) 0%, transparent 50%);
+    }
+    #conclusion h2 { margin-bottom: 1rem; }
+    #conclusion .final-text {
+      max-width: 650px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .dual-quote {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .dual-quote .dq {
+      padding: 1.2rem;
+      border-radius: 14px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .dual-quote .dq.parm {
+      background: rgba(139,154,255,0.08);
+      border: 1px solid rgba(139,154,255,0.2);
+      color: #d8ddff;
+    }
+    .dual-quote .dq.hera {
+      background: rgba(255,140,90,0.08);
+      border: 1px solid rgba(255,140,90,0.2);
+      color: #ffd8c4;
+    }
+    .dual-quote .dq cite {
+      display: block;
+      font-style: normal;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.6rem;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .legacy-cols, .dual-quote { grid-template-columns: 1fr; }
+      .vs-table { font-size: 0.8rem; }
+      .vs-table td, .vs-table th { padding: 0.6rem 0.8rem; }
+      .phil-header { flex-direction: column; text-align: center; }
+    }
+
+    /* ─── KEYBOARD NAV ─── */
+    .slide { scroll-snap-stop: always; }
+
+    /* ─── VISUAL SEPARATOR ─── */
+    .divider {
+      width: 60px;
+      height: 3px;
+      border-radius: 2px;
+      margin: 1.2rem 0;
+    }
+    .parm-slide .divider { background: var(--parm-accent); }
+    .hera-slide .divider { background: var(--hera-accent); }
+
+    /* ─── DIAGRAM ─── */
+    .diagram-box {
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      max-width: 700px;
+    }
+    .diagram-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .diagram-node {
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .diagram-node.parm { background: rgba(74,90,203,0.15); color: var(--parm-accent); border: 1px solid rgba(74,90,203,0.25); }
+    .diagram-node.hera { background: rgba(232,93,38,0.15); color: var(--hera-accent); border: 1px solid rgba(232,93,38,0.25); }
+    .diagram-vs {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--muted);
+    }
+    .diagram-caption {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#intro">Inicio</a>
+  <a href="#contexto">Contexto</a>
+  <a href="#parmenides">Parménides</a>
+  <a href="#parm-args">Argumentos</a>
+  <a href="#heraclito">Heráclito</a>
+  <a href="#hera-args">Argumentos</a>
+  <a href="#versus">Comparación</a>
+  <a href="#legado">Legado</a>
+  <a href="#conclusion">Cierre</a>
+</nav>
+
+<!-- 1. INTRO -->
+<section class="slide" id="intro">
+  <div class="slide-inner">
+    <p class="section-label">Filosofía Presocrática</p>
+    <h1>El <span class="parm">Ser Inmutable</span> de Parménides<br>y el <span class="hera">Cambio del Ser</span> de Heráclito</h1>
+    <p class="subtitle">Dos visiones radicalmente opuestas sobre la realidad que fundaron 2.500 años de pensamiento occidental.</p>
+    <div class="diagram-box">
+      <div class="diagram-row">
+        <div class="diagram-node parm">El Ser ES y no puede NO SER</div>
+        <div class="diagram-vs">vs</div>
+        <div class="diagram-node hera">Todo fluye, nada permanece</div>
+      </div>
+      <p class="diagram-caption">La pregunta central: ¿La realidad es estática o dinámica?</p>
+    </div>
+    <div class="scroll-hint">Desplaza para continuar <span>&#8595;</span></div>
+  </div>
+</section>
+
+<!-- 2. CONTEXTO -->
+<section class="slide" id="contexto">
+  <div class="slide-inner">
+    <p class="section-label">Siglos VI – V a.C.</p>
+    <h2>Contexto Histórico</h2>
+    <p style="color:var(--muted); max-width:680px;">Los filósofos presocráticos buscaban el <strong style="color:#fff">arjé</strong> — el principio fundamental de toda la realidad — sin recurrir a explicaciones míticas. Parménides y Heráclito representan las dos respuestas más influyentes.</p>
+    <div class="context-grid">
+      <div class="context-card">
+        <div class="icon">&#127963;</div>
+        <h3>Grecia Clásica</h3>
+        <p>Surgimiento de las polis, expansión del comercio mediterráneo y nacimiento del pensamiento racional.</p>
+      </div>
+      <div class="context-card">
+        <div class="icon">&#128218;</div>
+        <h3>Presocráticos</h3>
+        <p>Tales, Anaximandro, Anaxímenes ya proponían elementos como arjé. Parménides y Heráclito llevan el debate al plano ontológico.</p>
+      </div>
+      <div class="context-card">
+        <div class="icon">&#129504;</div>
+        <h3>El problema del Ser</h3>
+        <p>¿Qué es lo que verdaderamente existe? ¿Lo que vemos cambiar o una realidad más profunda e inmutable?</p>
+      </div>
+      <div class="context-card">
+        <div class="icon">&#9878;&#65039;</div>
+        <h3>Razón vs. Sentidos</h3>
+        <p>Se plantea por primera vez la tensión epistemológica: ¿debemos confiar en lo que percibimos o en lo que razonamos?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. PARMÉNIDES -->
+<section class="slide parm-slide" id="parmenides">
+  <div class="slide-inner">
+    <div class="phil-header">
+      <div class="phil-avatar">&#9679;</div>
+      <div>
+        <p class="section-label">Escuela Eleática</p>
+        <h2 style="margin-bottom:0.2rem;">Parménides de Elea</h2>
+        <p class="phil-meta">c. 515 – 450 a.C. &middot; Elea, Magna Grecia (sur de Italia)</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="quote-block">
+      "El Ser es y es imposible que no sea; el no-ser no es y no es posible que sea."
+    </div>
+    <p style="color:var(--muted); margin: 1rem 0;">En su poema <strong style="color:#fff">"Sobre la Naturaleza"</strong>, Parménides presenta dos vías: la <em>Vía de la Verdad</em> (accesible por la razón) y la <em>Vía de la Opinión</em> (engañosa, basada en los sentidos).</p>
+    <div class="ideas-grid">
+      <div class="idea-card">
+        <h4>Uno</h4>
+        <p>El Ser es único e indivisible. No hay multiplicidad real, solo una única realidad continua.</p>
+      </div>
+      <div class="idea-card">
+        <h4>Inmutable</h4>
+        <p>El cambio es imposible. Si algo cambiara, pasaría del ser al no-ser, lo cual es lógicamente imposible.</p>
+      </div>
+      <div class="idea-card">
+        <h4>Eterno</h4>
+        <p>No tiene principio ni fin. No fue generado ni puede ser destruido, porque eso implicaría el no-ser.</p>
+      </div>
+      <div class="idea-card">
+        <h4>Continuo</h4>
+        <p>No tiene vacíos ni separaciones. El vacío sería "no-ser", y el no-ser no existe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. PARMÉNIDES ARGUMENTOS -->
+<section class="slide parm-slide" id="parm-args">
+  <div class="slide-inner">
+    <p class="section-label">Vía de la Verdad</p>
+    <h2>Argumentos de Parménides</h2>
+    <div class="divider"></div>
+    <div class="args-list">
+      <div class="arg-item">
+        <div class="arg-num">1</div>
+        <div>
+          <h4>Argumento lógico contra el no-ser</h4>
+          <p>No se puede pensar ni decir lo que no es. Pensar el no-ser ya le da cierta existencia, lo que es contradictorio. Solo el Ser puede ser pensado.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">2</div>
+        <div>
+          <h4>Imposibilidad del cambio</h4>
+          <p>Cambiar implica dejar de ser algo (pasar al no-ser) o empezar a ser algo (surgir del no-ser). Ambas opciones son imposibles porque el no-ser no existe.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">3</div>
+        <div>
+          <h4>Imposibilidad del movimiento</h4>
+          <p>Para moverse, un cuerpo necesitaría un espacio vacío a donde ir. Pero el vacío es no-ser, y el no-ser no existe. Luego, el movimiento es una ilusión.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">4</div>
+        <div>
+          <h4>Los sentidos engañan</h4>
+          <p>Percibimos cambio y multiplicidad, pero la razón demuestra que son ilusiones. Solo la razón (<em>logos</em>) accede a la verdad del Ser.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">5</div>
+        <div>
+          <h4>Identidad Ser-Pensar</h4>
+          <p>"Lo mismo es pensar y ser." El pensamiento y el Ser son lo mismo: solo se puede pensar lo que es, y lo que es puede ser pensado.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. HERÁCLITO -->
+<section class="slide hera-slide" id="heraclito">
+  <div class="slide-inner">
+    <div class="phil-header">
+      <div class="phil-avatar">&#128293;</div>
+      <div>
+        <p class="section-label">Escuela Jónica</p>
+        <h2 style="margin-bottom:0.2rem;">Heráclito de Éfeso</h2>
+        <p class="phil-meta">c. 535 – 475 a.C. &middot; Éfeso, Jonia (actual Turquía)</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="quote-block">
+      "No puedes bañarte dos veces en el mismo río, pues nuevas aguas corren siempre sobre ti."
+    </div>
+    <p style="color:var(--muted); margin: 1rem 0;">Apodado <strong style="color:#fff">"El Oscuro"</strong> por su estilo aforístico, Heráclito sostiene que la realidad es devenir constante, gobernado por el <em>Logos</em> — una ley racional universal.</p>
+    <div class="ideas-grid">
+      <div class="idea-card">
+        <h4>Devenir (Panta Rei)</h4>
+        <p>"Todo fluye." La realidad es un proceso continuo de transformación. Nada permanece idéntico a sí mismo.</p>
+      </div>
+      <div class="idea-card">
+        <h4>Fuego como arjé</h4>
+        <p>El fuego simboliza el cambio constante: se enciende y se apaga según medida. Es el principio dinámico de toda la realidad.</p>
+      </div>
+      <div class="idea-card">
+        <h4>Unidad de los opuestos</h4>
+        <p>Los contrarios son inseparables: día-noche, vida-muerte, frío-caliente. Su tensión genera la armonía del cosmos.</p>
+      </div>
+      <div class="idea-card">
+        <h4>Logos universal</h4>
+        <p>Hay una ley racional que ordena todos los cambios. El sabio es quien reconoce este Logos oculto tras las apariencias.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. HERÁCLITO ARGUMENTOS -->
+<section class="slide hera-slide" id="hera-args">
+  <div class="slide-inner">
+    <p class="section-label">La doctrina del flujo</p>
+    <h2>Argumentos de Heráclito</h2>
+    <div class="divider"></div>
+    <div class="args-list">
+      <div class="arg-item">
+        <div class="arg-num">1</div>
+        <div>
+          <h4>La evidencia del cambio</h4>
+          <p>Todo en la naturaleza cambia: las estaciones, el crecimiento, la muerte. El cambio no es ilusión sino la esencia misma de lo real.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">2</div>
+        <div>
+          <h4>La guerra como padre de todas las cosas</h4>
+          <p>"La guerra es el padre y el rey de todo." El conflicto y la tensión entre opuestos no es destructivo, es lo que genera y sostiene la realidad.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">3</div>
+        <div>
+          <h4>Armonía oculta</h4>
+          <p>"La armonía oculta es más fuerte que la visible." Tras el caos aparente de los cambios hay un orden profundo — el Logos — que todo lo gobierna.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">4</div>
+        <div>
+          <h4>El camino hacia arriba y hacia abajo es uno y el mismo</h4>
+          <p>Los opuestos son perspectivas de la misma realidad. El agua de mar es vida para los peces y veneno para los hombres. La realidad depende de la relación.</p>
+        </div>
+      </div>
+      <div class="arg-item">
+        <div class="arg-num">5</div>
+        <div>
+          <h4>Sin oposición no hay identidad</h4>
+          <p>No podríamos conocer la salud sin la enfermedad, ni el bien sin el mal. Los contrarios se definen mutuamente y son necesarios.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. VERSUS -->
+<section class="slide" id="versus">
+  <div class="slide-inner">
+    <p class="section-label">Cara a cara</p>
+    <h2>Tabla Comparativa</h2>
+    <table class="vs-table">
+      <thead>
+        <tr>
+          <th>Aspecto</th>
+          <th>Parménides</th>
+          <th>Heráclito</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>La realidad es...</td>
+          <td>Inmutable, eterna, una</td>
+          <td>Cambio constante, devenir</td>
+        </tr>
+        <tr>
+          <td>El cambio es...</td>
+          <td>Una ilusión de los sentidos</td>
+          <td>La esencia misma del Ser</td>
+        </tr>
+        <tr>
+          <td>Fuente de conocimiento</td>
+          <td>La razón (logos)</td>
+          <td>La razón + los sentidos</td>
+        </tr>
+        <tr>
+          <td>Los sentidos...</td>
+          <td>Engañan siempre</td>
+          <td>Muestran el devenir real</td>
+        </tr>
+        <tr>
+          <td>Arjé</td>
+          <td>El Ser (abstracto, lógico)</td>
+          <td>El fuego (dinámico)</td>
+        </tr>
+        <tr>
+          <td>Los opuestos...</td>
+          <td>No existen realmente</td>
+          <td>Son la estructura del cosmos</td>
+        </tr>
+        <tr>
+          <td>El no-ser...</td>
+          <td>No existe, es impensable</td>
+          <td>Es parte del devenir</td>
+        </tr>
+        <tr>
+          <td>Metáfora clave</td>
+          <td>La esfera perfecta</td>
+          <td>El río que fluye</td>
+        </tr>
+        <tr>
+          <td>Método</td>
+          <td>Deducción lógica pura</td>
+          <td>Aforismos y observación</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 8. LEGADO -->
+<section class="slide" id="legado">
+  <div class="slide-inner">
+    <p class="section-label">Repercusiones</p>
+    <h2>Legado Filosófico</h2>
+    <p style="color:var(--muted); max-width:680px; margin-bottom:0.5rem;">Ambos pensadores dejaron huellas profundas que llegan hasta la filosofía contemporánea.</p>
+    <div class="legacy-cols">
+      <div class="legacy-col parm">
+        <h3>Parménides</h3>
+        <ul>
+          <li><strong>Platón</strong> hereda la distinción entre mundo sensible (ilusorio) y mundo inteligible (verdadero).</li>
+          <li><strong>Zenón de Elea</strong>, su discípulo, crea las célebres paradojas (Aquiles y la tortuga) para defender la imposibilidad del movimiento.</li>
+          <li>Funda la <strong>ontología</strong> como disciplina: el estudio del Ser en cuanto Ser.</li>
+          <li>Influye en la <strong>lógica formal</strong>: el principio de no contradicción.</li>
+          <li>Base del <strong>racionalismo</strong>: la verdad se alcanza solo por la razón.</li>
+        </ul>
+      </div>
+      <div class="legacy-col hera">
+        <h3>Heráclito</h3>
+        <ul>
+          <li><strong>Hegel</strong> retoma la dialéctica: tesis, antítesis y síntesis nacen del conflicto de opuestos.</li>
+          <li><strong>Nietzsche</strong> lo admira como el filósofo que dijo "sí" al devenir y a la vida.</li>
+          <li><strong>Marx</strong> aplica la dialéctica al materialismo histórico: la historia avanza por la lucha de clases.</li>
+          <li>Inspira la <strong>filosofía del proceso</strong> (Whitehead) y el existencialismo.</li>
+          <li>La física moderna (termodinámica, mecánica cuántica) confirma que todo está en constante transformación.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. CONCLUSIÓN -->
+<section class="slide" id="conclusion">
+  <div class="slide-inner">
+    <p class="section-label">Reflexión final</p>
+    <h2>¿Permanencia o Cambio?</h2>
+    <p class="final-text">
+      La tensión entre Parménides y Heráclito no se "resolvió" — se transformó. Platón intentó una síntesis con su teoría de las Ideas (formas inmutables + mundo cambiante). Aristóteles propuso el <em>acto y la potencia</em> como puente. Pero la pregunta sigue viva: ¿hay algo permanente bajo el cambio, o el cambio es lo único real?
+    </p>
+    <div class="dual-quote">
+      <div class="dq parm">
+        "Lo que es, es. Lo que no es, no es. No hay término medio."
+        <cite>Parménides</cite>
+      </div>
+      <div class="dq hera">
+        "Este mundo, el mismo para todos, no lo hizo ningún dios ni ningún hombre, sino que siempre fue, es y será fuego eternamente viviente."
+        <cite>Heráclito</cite>
+      </div>
+    </div>
+    <p style="color:var(--muted); margin-top: 2.5rem; font-size: 0.95rem;">
+      Quizás la mayor lección es que <strong style="color:#fff;">ambos tenían razón en algo</strong>: hay leyes constantes (el Logos) que gobiernan un universo en perpetuo cambio.
+    </p>
+  </div>
+</section>
+
+<footer>
+  Micro-clase &middot; Filosofía Presocrática &middot; 2026
+</footer>
+
+<!-- Keyboard nav & active link -->
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const navLinks = document.querySelectorAll('nav a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slides.forEach(s => observer.observe(s));
+
+  document.addEventListener('keydown', e => {
+    const ids = [...slides].map(s => s.id);
+    const current = [...slides].findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -100 && r.top < window.innerHeight / 2;
+    });
+    if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(current + 1, ids.length - 1);
+      document.getElementById(ids[next]).scrollIntoView({ behavior: 'smooth' });
+    }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(current - 1, 0);
+      document.getElementById(ids[prev]).scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+
+</body>
+</html>
